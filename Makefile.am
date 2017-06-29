@@ -160,6 +160,10 @@ if ENABLE_TABLECONVERT
 SUBDIRS += tableconvert
 endif
 
+if ENABLE_TAGFILTER
+SUBDIRS += tagfilter
+endif
+
 if ENABLE_TREEBROWSER
 SUBDIRS += treebrowser
 endif

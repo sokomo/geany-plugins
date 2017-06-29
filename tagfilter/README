@@ -1,0 +1,44 @@
+=========
+Commander
+=========
+
+.. contents::
+
+
+About
+=====
+
+Tag filter is a plugin for Geany that provides a pannel to rapid access to tag
+and easy to navigate the document
+
+
+Usage
+=====
+
+After having enabled the plugin inside Geany through Geany's plugin manager,
+you'll need to setup a keybinding for triggering the Commander panel.  Go to
+the preferences, and under the Keybindings tab set the *Tag Filter -> Show Panel*
+keybinding
+
+
+License
+=======
+
+This plugin is distributed under the terms of the GNU General Public License
+as published by the Free Software Foundation, either version 2 of the
+License, or (at your option) any later version. You should have received a copy
+of the GNU General Public License along with this plugin.  If not, see
+<http://www.gnu.org/licenses/>.
+
+
+Contact
+=======
+
+You can email me at <901stt(at)gmail(dot)com>.
+
+
+Bug reports and feature requests
+--------------------------------
+
+To report a bug or ask for a new feature, please use the Geany-Plugins tracker
+on GitHub: https://github.com/geany/geany-plugins/issues
