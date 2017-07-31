@@ -95,6 +95,13 @@ struct {
   NULL
 };
 
+struct DocumentTracking {
+  GeanyDocument *doc;
+  glong         line;
+} doc_data = {
+  NULL, 0
+};
+
 typedef enum {
   COL_TYPE_TAG        = 1 << 0,
   COL_TYPE_ANY        = 0xffff
@@ -228,12 +235,12 @@ tree_view_move_focus (GtkTreeView    *view,
 
   if (valid) {
     gint line_num;
-    GeanyDocument *doc;
-    doc = document_get_current ();
     gtk_tree_model_get (model, &iter,
                         COL_LINENUM, &line_num,
                         -1);
-    navqueue_goto_line(doc, doc, line_num);
+    navqueue_goto_line (doc_data.doc,
+                        doc_data.doc,
+                        line_num);
     tree_view_set_cursor_from_iter (view, &iter);
   } else {
     gtk_widget_error_bell (GTK_WIDGET (view));
@@ -252,6 +259,7 @@ tree_view_activate_focused_row (GtkTreeView *view)
     gtk_tree_path_free (path);
   }
 }
+
 
 static void
 fill_store (GtkListStore *store)
@@ -335,6 +343,9 @@ on_panel_key_press_event (GtkWidget    *widget,
 {
   switch (event->keyval) {
     case GDK_KEY_Escape:
+      navqueue_goto_line (doc_data.doc,
+                          doc_data.doc,
+                          doc_data.line);
       gtk_widget_hide (widget);
       return TRUE;
 
@@ -345,7 +356,7 @@ on_panel_key_press_event (GtkWidget    *widget,
     case GDK_KEY_Return:
     case GDK_KEY_KP_Enter:
     case GDK_KEY_ISO_Enter:
-      tree_view_activate_focused_row (GTK_TREE_VIEW (plugin_data.view));
+      gtk_widget_hide (widget);
       return TRUE;
 
     case GDK_KEY_Page_Up:
@@ -409,16 +420,27 @@ on_panel_hide (GtkWidget *widget,
   gtk_tree_view_get_cursor (view, &plugin_data.last_path, NULL);
 
   gtk_list_store_clear (plugin_data.store);
+  doc_data.doc = NULL;
+  doc_data.line = 0;
 }
 
 static void
 on_panel_show (GtkWidget *widget,
                gpointer   dummy)
 {
+  gint current_pos = 0;
+  GeanyDocument *doc = document_get_current ();
   GtkTreePath *path;
   GtkTreeView *view = GTK_TREE_VIEW (plugin_data.view);
 
   fill_store (plugin_data.store);
+
+  if (doc) {
+    current_pos = sci_get_current_position (doc->editor->sci);
+    doc_data.doc = doc;
+    doc_data.line =
+      sci_get_line_from_position (doc->editor->sci, current_pos) + 1;
+  }
 
   gtk_widget_grab_focus (plugin_data.entry);
 
