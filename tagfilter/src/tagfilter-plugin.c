@@ -19,6 +19,7 @@
 
 #include "config.h"
 
+#include <stdio.h>
 #include <string.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -213,7 +214,9 @@ tree_view_move_focus (GtkTreeView    *view,
         /* FIXME: move by page */
       case GTK_MOVEMENT_DISPLAY_LINES:
         gtk_tree_model_get_iter (model, &iter, path);
-        if (amount > 0) {
+        if (amount == 0) {
+          valid = TRUE;
+        } else if (amount > 0) {
           while ((valid = gtk_tree_model_iter_next (model, &iter)) &&
                  --amount > 0)
             ;
@@ -356,6 +359,8 @@ on_panel_key_press_event (GtkWidget    *widget,
     case GDK_KEY_Return:
     case GDK_KEY_KP_Enter:
     case GDK_KEY_ISO_Enter:
+      tree_view_move_focus (GTK_TREE_VIEW (plugin_data.view),
+                            GTK_MOVEMENT_PAGES, 0);
       gtk_widget_hide (widget);
       return TRUE;
 
